@@ -48,6 +48,51 @@ paths:
                     - id: 2
                       name: Cyberpunk 2077
                       price: 59.99
+    post:
+      tags:
+        - new-game
+      summary: Creates a game
+      description: Creates a new game
+      requestBody:
+        description: A new game to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/new-game'
+            examples:
+              Tetris:
+                value:
+                  name: Tetris
+                  price: 0.99
+      responses:
+        '201':
+          description: Game was created
+          headers:
+            Location:
+              description: URL of the created game
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/game'
+              examples:
+                Created game:
+                  value:
+                    id: 9
+                    name: Tetris
+                    price: 0.99
+        '400':
+          description: One or all params are missing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                Missing params:
+                  value:
+                    error: One or all params are missing
   /games/{id}:
     parameters:
       - name: id
@@ -112,3 +157,19 @@ components:
         id: 1
         name: Witcher 3
         price: 29.99
+    new-game:
+      title: Root Type for new-game
+      description: ''
+      required:
+        - name
+        - price
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          format: float
+          type: number
+      example:
+        name: Tetris
+        price: 0.99
