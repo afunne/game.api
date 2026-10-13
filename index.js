@@ -23,11 +23,12 @@ app.get('/games', (req, res) => {
 })
 
 app.get('/games/:id', (req, res) => {
-    if (typeof games[req.params.id - 1] === 'undefined') {
+    const game = games.find(g => g.id === Number(req.params.id))
+    if (typeof game === 'undefined') {
         return res.status(404).send({error: "Game not found"})
     }
 
-    res.send(games[req.params.id - 1])
+    res.send(game)
 })
 
 app.post('/games', (req, res) => {
@@ -36,7 +37,7 @@ app.post('/games', (req, res) => {
         return res.status(400).send({error: 'One or all params are missing'})
     }
     let game = {
-        id: games.length + 1,
+        id: games.length ? Math.max(...games.map(g => g.id)) + 1 : 1,
         price: price,
         name: name
     }
@@ -44,8 +45,19 @@ app.post('/games', (req, res) => {
     games.push(game)
 
     res.status(201)
-        .location(`${getBaseUrl(req)}/games/${games.length}`)
+        .location(`${getBaseUrl(req)}/games/${game.id}`)
         .send(game)
+})
+
+app.delete('/games/:id', (req, res) => {
+    const index = games.findIndex(g => g.id === Number(req.params.id))
+    if (index === -1) {
+        return res.status(404).send({error: "Game not found"})
+    }
+
+    games.splice(index, 1)
+
+    res.status(204).send()
 })
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))

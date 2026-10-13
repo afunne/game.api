@@ -130,6 +130,24 @@ paths:
                 Game /w+ was not found:
                   value:
                     error: Game not found
+    delete:
+      tags:
+        - delete-game
+      summary: Deletes a game
+      description: Deletes a game with the given id
+      responses:
+        '204':
+          description: Game was deleted
+        '404':
+          description: Game was not found in games array
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                Game not found:
+                  value:
+                    error: Game not found
 components:
   schemas:
     error:
