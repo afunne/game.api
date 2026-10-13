@@ -20,6 +20,7 @@
   "homepage": "https://github.com/afunne/game.api#readme",
   "dependencies": {
     "express": "^5.3.0",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0"
   }
 }

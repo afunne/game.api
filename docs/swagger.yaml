@@ -1,0 +1,114 @@
+openapi: 3.0.2
+info:
+  title: Games-API
+  version: 1.0.0
+  description: |
+    ### This is a Swagger UI for our Games API
+
+    ### Error handling
+    Errors are presented using the HTTP status codes 400-599. The response include a more detailed explanation about the error in the body.
+
+    ```
+    {
+      "error": "Cleartext explanation of the error that occurred"
+    }
+    ```
+
+    ### Generic API errors
+    These error responses can be returned by any of the described endpoints.
+
+    | HTTP status  |  Description |
+    |---|---|
+    | 400| Bad input parameters or invalid request. More information can be found in the response body.
+    | 401| The consumer does not have access to the requested resource or the provided token is not valid.
+    | 404| The requested resource can not be found or the user does not have access to the resource.
+    | 5XX| A server error has occurred while processing the request.
+paths:
+  /games:
+    get:
+      tags:
+        - games
+      summary: Get a list of all games
+      description: Returns a list of all games in API
+      responses:
+        '200':
+          description: Returns a list of games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/game'
+              examples:
+                List of games:
+                  value:
+                    - id: 1
+                      name: Witcher 3
+                      price: 29.99
+                    - id: 2
+                      name: Cyberpunk 2077
+                      price: 59.99
+  /games/{id}:
+    parameters:
+      - name: id
+        in: path
+        description: ID of the game
+        required: true
+        schema:
+          type: integer
+    get:
+      tags:
+        - details
+      summary: Get full details of a game
+      description: Returns full details of a given id game
+      operationId: id
+      responses:
+        '200':
+          description: Returns full details of a given id game
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/game'
+              examples:
+                Full details of a given game:
+                  value:
+                    id: 1
+                    name: Witcher 3
+                    price: 29.99
+        '404':
+          description: Game was not found in games array
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                Game /w+ was not found:
+                  value:
+                    error: Game not found
+components:
+  schemas:
+    error:
+      title: Root Type for error
+      description: ''
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: Error message.
+    game:
+      title: Root Type for game
+      description: ''
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          format: float
+          type: number
+      example:
+        id: 1
+        name: Witcher 3
+        price: 29.99
