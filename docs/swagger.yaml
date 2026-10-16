@@ -28,100 +28,71 @@ paths:
     get:
       tags:
         - games
-      summary: Get a list of all games
-      description: Returns a list of all games in API
       responses:
         '200':
-          description: Returns a list of games
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/game'
+                  type: string
               examples:
                 List of games:
                   value:
-                    - id: 1
-                      name: Witcher 3
-                      price: 29.99
-                    - id: 2
-                      name: Cyberpunk 2077
-                      price: 59.99
+                    - Witcher 3
+                    - Cyberpunk 2077
+          description: Returns a list of games
+      summary: Get a list of all games
+      description: Returns a list of all games in API
     post:
-      tags:
-        - new-game
-      summary: Creates a game
-      description: Creates a new game
       requestBody:
         description: A new game to be created
-        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/new-game'
-            examples:
-              Tetris:
-                value:
-                  name: Tetris
-                  price: 0.99
+        required: true
+      tags:
+        - new-game
       responses:
         '201':
-          description: Game was created
-          headers:
-            Location:
-              description: URL of the created game
-              schema:
-                type: string
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/game'
-              examples:
-                Created game:
-                  value:
-                    id: 9
-                    name: Tetris
-                    price: 0.99
+                $ref: '#/components/schemas/new-game'
+          description: Game was created
         '400':
-          description: One or all params are missing
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
               examples:
-                Missing params:
+                One or all params are missing:
                   value:
                     error: One or all params are missing
+          description: One or all params are missing
+      summary: Creates a game
+      description: Creates a new game
   /games/{id}:
-    parameters:
-      - name: id
-        in: path
-        description: ID of the game
-        required: true
-        schema:
-          type: integer
     get:
       tags:
         - details
-      summary: Get full details of a game
-      description: Returns full details of a given id game
-      operationId: id
       responses:
         '200':
-          description: Returns full details of a given id game
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/game'
+                type: array
+                items:
+                  type: string
               examples:
                 Full details of a given game:
                   value:
                     id: 1
                     name: Witcher 3
                     price: 29.99
+          description: Returns full details of a given id game
         '404':
-          description: Game was not found in games array
           content:
             application/json:
               schema:
@@ -129,25 +100,40 @@ paths:
               examples:
                 Game /w+ was not found:
                   value:
-                    error: Game not found
+                    error: Game \w+ was not found in game array
+          description: Game was not found in games array
+      operationId: id
+      summary: Get full details of a game
+      description: Returns full details of a given id game
     delete:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/delete-game'
       tags:
         - delete-game
-      summary: Deletes a game
-      description: Deletes a game with the given id
       responses:
         '204':
           description: Game was deleted
         '404':
-          description: Game was not found in games array
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
               examples:
-                Game not found:
+                Game /w+ was not found:
                   value:
-                    error: Game not found
+                    error: Game \w+ was not found in game array
+          description: Game was not found in games array
+      summary: Deletes a game
+      description: Deletes a game with a given id
+    parameters:
+      - name: id
+        schema:
+          type: string
+        in: path
+        required: true
 components:
   schemas:
     error:
@@ -159,22 +145,6 @@ components:
           type: string
       example:
         error: Error message.
-    game:
-      title: Root Type for game
-      description: ''
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        price:
-          format: float
-          type: number
-      example:
-        id: 1
-        name: Witcher 3
-        price: 29.99
     new-game:
       title: Root Type for new-game
       description: ''
@@ -191,3 +161,14 @@ components:
       example:
         name: Tetris
         price: 0.99
+    delete-game:
+      title: Root Type for delete-game
+      description: ''
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          type: string
+      example:
+        id: 1

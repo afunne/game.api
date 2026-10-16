@@ -23,41 +23,39 @@ app.get('/games', (req, res) => {
 })
 
 app.get('/games/:id', (req, res) => {
-    const game = games.find(g => g.id === Number(req.params.id))
-    if (typeof game === 'undefined') {
+
+    if (typeof games[req.params.id - 1] === 'undefined') {
         return res.status(404).send({error: "Game not found"})
     }
 
-    res.send(game)
+    res.send(games[req.params.id - 1])
 })
 
 app.post('/games', (req, res) => {
-    const {name, price} = req.body ?? {}
-    if (!name || price === undefined || price === null || price === '') {
-        return res.status(400).send({error: 'One or all params are missing'})
+    if (!req.body.name || !req.body.price) {
+        return res.status(400).send({ error: 'One or all params are missing' })
     }
     let game = {
-        id: games.length ? Math.max(...games.map(g => g.id)) + 1 : 1,
-        price: price,
-        name: name
+        id: games.length + 1,
+        price: req.body.price,
+        name: req.body.name
     }
 
     games.push(game)
 
     res.status(201)
-        .location(`${getBaseUrl(req)}/games/${game.id}`)
+        .location(`${getBaseUrl(req)}/games/${games.length}`)
         .send(game)
 })
 
 app.delete('/games/:id', (req, res) => {
-    const index = games.findIndex(g => g.id === Number(req.params.id))
-    if (index === -1) {
+    if (typeof games[req.params.id - 1] === 'undefined') {
         return res.status(404).send({error: "Game not found"})
     }
 
-    games.splice(index, 1)
+    games.splice(req.params.id - 1, 1)
 
-    res.status(204).send()
+    res.status(204).send({error: "No content"})
 })
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
@@ -67,6 +65,6 @@ app.listen(port, () => {
 })
 
 function getBaseUrl(req) {
-    return (req.socket && req.socket.encrypted ? 'https' : 'http')
-        + `://${req.headers.host}`
+    return req.connection && req.connection.encrypted
+        ? 'https' : 'http' + `://${req.headers.host}`
 }
