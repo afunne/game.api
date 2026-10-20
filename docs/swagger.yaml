@@ -128,6 +128,51 @@ paths:
           description: Game was not found in games array
       summary: Deletes a game
       description: Deletes a game with a given id
+    put:
+      requestBody:
+        description: New data for the game
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/new-game'
+        required: true
+      tags:
+        - update-game
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/new-game'
+              examples:
+                Updated game:
+                  value:
+                    id: 1
+                    name: Witcher 3 GOTY
+                    price: 39.99
+          description: Returns the updated game
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                One or all params are missing:
+                  value:
+                    error: One or all params are missing
+          description: One or all params are missing
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                Game /w+ was not found:
+                  value:
+                    error: Game \w+ was not found in game array
+          description: Game was not found in games array
+      summary: Updates a game
+      description: Updates the name and price of a game with a given id
     parameters:
       - name: id
         schema:
