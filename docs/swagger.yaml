@@ -35,12 +35,16 @@ paths:
               schema:
                 type: array
                 items:
-                  type: string
+                  $ref: '#/components/schemas/game'
               examples:
                 List of games:
                   value:
-                    - Witcher 3
-                    - Cyberpunk 2077
+                    - id: 6717f0c2a1b2c3d4e5f60718
+                      name: Witcher 3
+                      price: 29.99
+                    - id: 6717f0c2a1b2c3d4e5f60719
+                      name: Cyberpunk 2077
+                      price: 59.99
           description: Returns a list of games
       summary: Get a list of all games
       description: Returns a list of all games in API
@@ -59,7 +63,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/new-game'
+                $ref: '#/components/schemas/game'
           description: Game was created
         '400':
           content:
@@ -82,13 +86,11 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: string
+                $ref: '#/components/schemas/game'
               examples:
                 Full details of a given game:
                   value:
-                    id: 1
+                    id: 6717f0c2a1b2c3d4e5f60718
                     name: Witcher 3
                     price: 29.99
           description: Returns full details of a given id game
@@ -143,11 +145,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/new-game'
+                $ref: '#/components/schemas/game'
               examples:
                 Updated game:
                   value:
-                    id: 1
+                    id: 6717f0c2a1b2c3d4e5f60718
                     name: Witcher 3 GOTY
                     price: 39.99
           description: Returns the updated game
@@ -175,8 +177,10 @@ paths:
       description: Updates the name and price of a game with a given id
     parameters:
       - name: id
+        description: MongoDB ObjectId of the game
         schema:
           type: string
+          example: 6717f0c2a1b2c3d4e5f60718
         in: path
         required: true
 components:
@@ -216,4 +220,21 @@ components:
         id:
           type: string
       example:
-        id: 1
+        id: 6717f0c2a1b2c3d4e5f60718
+    game:
+      title: Root Type for game
+      description: A game stored in MongoDB
+      type: object
+      properties:
+        id:
+          type: string
+          description: MongoDB ObjectId
+        name:
+          type: string
+        price:
+          format: float
+          type: number
+      example:
+        id: 6717f0c2a1b2c3d4e5f60718
+        name: Tetris
+        price: 0.99
